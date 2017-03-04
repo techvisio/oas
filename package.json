@@ -1,0 +1,23 @@
+{
+  "name": "oas",
+  "version": "1.0.0",
+  "description": "online assessment system",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techvisio/oas.git"
+  },
+  "author": "techvisio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techvisio/oas/issues"
+  },
+  "homepage": "https://github.com/techvisio/oas#readme",
+  "devDependencies": {
+    "grunt": "1.0.1",
+    "grunt-cli": "1.2.0"
+  }
+}
