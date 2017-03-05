@@ -1,0 +1,10 @@
+{
+  "development":{
+      "databaseUrl":"localhost/mongo",
+      "dbUser":"",
+      "dbPwd":""
+  },
+  "QA":{},
+  "production":{},
+  "app.port":3000
+}

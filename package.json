@@ -4,7 +4,8 @@
   "description": "online assessment system",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,16 @@
   "homepage": "https://github.com/techvisio/oas#readme",
   "devDependencies": {
     "grunt": "1.0.1",
-    "grunt-cli": "1.2.0"
+    "grunt-cli": "1.2.0",
+    "jshint": "2.9.4"
   },
   "dependencies": {
+    "body-parser": "1.17.0",
     "express": "4.15.0",
+    "method-override": "2.3.7",
     "mongo": "0.1.0",
-    "mongoose": "4.8.5"
-  }
+    "mongoose": "4.8.5",
+    "nconf": "0.8.4"
+  },
+  "jshintConfig": "dev_config/jshintrc.json"
 }
