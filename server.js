@@ -1,11 +1,7 @@
 var express = require('express');
-var nconf = require('nconf');
-//var path = require('path');
-//var logger = require('morgan');
+var propertyHolder = require('./app/utils/propertyHolder');
 var bodyParser = require('body-parser');
-nconf.argv()
-   .env()
-   .file({ file: 'config/config.json' });
+
 var app = express();
 //app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -27,7 +23,7 @@ next();
 //app.use('/', require('./routes'));
 // If no route is matched by now, it must be a 404
 app.use(function(req, res, next) {
-res.send('Hello Node'+nconf.get('development:databaseUrl'));
+res.send('Hello Node '+propertyHolder.getProperty('development:databaseUrl'));
 });
 // Start the server
 app.set('port', app.port || 3000);

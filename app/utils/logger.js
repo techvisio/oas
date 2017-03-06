@@ -9,6 +9,7 @@ const logger = new (winston.Logger)({
     })
   ]
 });
+
 module.exports=function(){
     return {
            debug:debug
