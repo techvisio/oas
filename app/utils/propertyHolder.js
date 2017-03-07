@@ -16,4 +16,4 @@ module.exports = (function() {
     function setProperty(property,value) {
         return nconf.set(property,value);
     }
-})();
+}());

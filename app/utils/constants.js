@@ -1,6 +1,5 @@
-module.exports=function(){
-    return {
-        question_level_high:"HIGH",
-
-    };
+module.exports={
+   QUESTION_LEVEL_HIGH="HIGH",
+   QUESTION_LEVEL_MODERATE="MODERATE",
+   QUESTION_LEVEL_EASY="EASY"
 }
