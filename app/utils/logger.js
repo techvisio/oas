@@ -1,14 +1,22 @@
 var  winston = require('winston');
 const tsFormat = () => (new Date()).toLocaleTimeString();
+const logDir = 'log';
+const fs = require('fs');
+// Create the log directory if it does not exist
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
 const logger = new (winston.Logger)({
   transports: [
     // colorize the output to the console
     new (winston.transports.File)({
-      timestamp: tsFormat,
-      colorize: true,
+       filename: `${logDir}/application.log`,
+       timestamp: tsFormat,
+       colorize: true,
     })
   ]
 });
+
 
 module.exports=(function(){
     return {
@@ -31,7 +39,7 @@ module.exports=(function(){
     var silly=function(msg){
       logger.silly(msg);
     }
-    var info=function(msg){
+    function info(msg){
       logger.info(msg);
     }
     var verbose=function(msg){

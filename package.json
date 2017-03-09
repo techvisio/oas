@@ -28,7 +28,8 @@
     "method-override": "2.3.7",
     "mongo": "0.1.0",
     "mongoose": "4.8.5",
-    "nconf": "0.8.4"
+    "nconf": "0.8.4",
+    "winston": "2.3.1"
   },
   "jshintConfig": "dev_config/jshintrc.json"
 }

@@ -6,5 +6,6 @@
   },
   "QA":{},
   "production":{},
-  "app.port":3000
+  "app.port":3000,
+  "log_directory":"/logs"
 }
