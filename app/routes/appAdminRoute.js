@@ -1,9 +1,10 @@
 var express = require('express');
-
+var adminMapping = require('../mappings/adminMapping.js');
 var router = express.Router();
 
-router.get('/client/new', function(req, res) {
-    res.send('GET handler for /dogs route.');
+router.post('/client', function(req, res) {
+   adminMapping.saveClient(req.body);
+   res.send('Created successfully');
 });
 
 

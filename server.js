@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var logger = require('./app/utils/logger');
 var dbProvider=require('./app/providers/dbProvider.js');
 var app = express();
+var adminRouter = require('./app/routes/appAdminRoute.js');
 dbProvider.connect();
 //app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -19,14 +20,7 @@ res.status(200).end();
 next();
 }
 });
-
-//app.all('/api/v1/*', [require('./middlewares/validateRequest')]);
-//app.use('/', require('./routes'));
-// If no route is matched by now, it must be a 404
-logger.info('testing logging work');
-app.use(function(req, res, next) {
-res.send('Hello Node '+propertyHolder.getProperty('development:databaseUrl'));
-});
+app.use('/admin',adminRouter);
 // Start the server
 app.set('port', app.port || 3000);
 var server = app.listen(app.get('port'), function() {
