@@ -1,11 +1,12 @@
 var express = require('express');
-var propertyHolder = require('./app/utils/propertyHolder');
+var propertyHolder = require('./app/utils/propertyHolder.js');
 var bodyParser = require('body-parser');
 var logger = require('./app/utils/logger');
+var dbProvider=require('./app/providers/dbProvider.js');
 var app = express();
+dbProvider.connect();
 //app.use(logger('dev'));
 app.use(bodyParser.json());
-
 app.all('/*', function(req, res, next) {
 // CORS headers
 res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain

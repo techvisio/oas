@@ -1,6 +1,6 @@
 {
   "development":{
-      "databaseUrl":"localhost/mongo",
+      "databaseUrl":"localhost:27017/oas",
       "dbUser":"",
       "dbPwd":""
   },
