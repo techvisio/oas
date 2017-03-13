@@ -5,5 +5,6 @@ module.exports={
    QUESTION_LEVEL_EASY:"EASY",
 
    //constants used for mongoose model mapping
-   MODEL_CLIENT:"CLIENT"
+   MODEL_CLIENT:"CLIENT",
+   MODEL_USER:"USER"
 }

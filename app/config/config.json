@@ -2,7 +2,8 @@
   "development":{
       "databaseUrl":"localhost:27017/oas",
       "dbUser":"",
-      "dbPwd":""
+      "dbPwd":"",
+      "logPayload":true
   },
   "QA":{},
   "production":{},

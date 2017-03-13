@@ -1,13 +1,19 @@
 var express = require('express');
-var propertyHolder = require('./app/utils/propertyHolder.js');
+var utils = require('./app/utils/utilProvider.js');
 var bodyParser = require('body-parser');
-var logger = require('./app/utils/logger');
 var dbProvider=require('./app/providers/dbProvider.js');
+var routeHandler = require('./app/routes/routerHandler');
+
+//initialise the application
 var app = express();
-var adminRouter = require('./app/routes/appAdminRoute.js');
+
+//connect database
 dbProvider.connect();
-//app.use(logger('dev'));
+
+//add body parser for all requests
 app.use(bodyParser.json());
+
+//set request headers for all requests
 app.all('/*', function(req, res, next) {
 // CORS headers
 res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
@@ -20,9 +26,12 @@ res.status(200).end();
 next();
 }
 });
-app.use('/admin',adminRouter);
+
+//handle all the requests
+app.use('/api',routeHandler)
+
 // Start the server
-app.set('port', app.port || 3000);
+app.set('port', utils.getConfiguration().getProperty('app.port') || 3000);
 var server = app.listen(app.get('port'), function() {
 console.log('Express server listening on port ' + server.address().port);
 });
