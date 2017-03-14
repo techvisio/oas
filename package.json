@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "node server.js"
+    "start": "node server.js --node.env development"
   },
   "repository": {
     "type": "git",
@@ -23,11 +23,13 @@
     "jshint": "2.9.4"
   },
   "dependencies": {
-    "body-parser": "1.17.0",
-    "express": "4.15.0",
+    "body-parser": "^1.17.0",
+    "express": "^4.15.0",
+    "jsonwebtoken": "^7.3.0",
     "method-override": "2.3.7",
     "mongo": "0.1.0",
-    "mongoose": "4.8.5",
+    "mongoose": "^4.8.5",
+    "morgan": "^1.8.1",
     "nconf": "0.8.4",
     "winston": "2.3.1"
   },
