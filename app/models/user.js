@@ -1,33 +1,43 @@
-var mongoose=require('mongoose');
-var Schema=mongoose.Schema;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var counterModel = require('../providers/sequenceProvider.js');
 
 var User = new Schema({
-    userId : Number,
-    clientId : Number,
-    userName : String,
-    password : String,
-    firstName : String,
-    lastname : String,
-    dateOfBirth : Date,
-    mobileNo : String,
-    emailId : String,
-    creationDate : Date,
-    createdBy : String,
-    updateDate : Date,
-    updatedBy : String,
-    isActive : Boolean,
-    priviledges : [String],
-    securityQuestion : {question : String , answer : String}
+    userId: Number,
+    clientCode: String,
+    userName: String,
+    password: String,
+    firstName: String,
+    lastname: String,
+    dateOfBirth: Date,
+    mobileNo: String,
+    emailId: String,
+    creationDate: Date,
+    createdBy: String,
+    updateDate: Date,
+    updatedBy: String,
+    role: String,
+    isActive: Boolean,
+    priviledges: [String],
+    securityQuestion: { question: String, answer: String }
 });
 
-User.statics.getUserById = function getUserById (user) {
-  this.model('user').find({ userName: user.userName, clientId: user.clientId }, function(err,users){
-        return users;
-  });
-};
+User.pre('save', function (next) {
+    var doc = this;
+    counterModel.findByIdAndUpdate({ _id: 'user' }, { $inc: { seq: 1 } }, function (error, counter) {
+        if (error) {
+            return next(error);
+        }
+        if (!counter) {
+            counterModel.create({ _id: 'user', seq: 1 });
+            counter = { seq: 1 };
+        }
+        
+        doc.userName = doc.userName.toLowerCase();
+        doc.userId = counter.seq;
 
-User.statics.createUser = function createUser (user) {
-   this.create(user);
-};
+        next();
+    });
+});
 
-module.exports=mongoose.model('user',User);
+module.exports = mongoose.model('user', User);

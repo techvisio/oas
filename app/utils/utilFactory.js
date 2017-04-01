@@ -1,15 +1,17 @@
 var constants=require('./constants.js');
-var config=require('./propertyHolder.js');
+var config=require('./configService.js');
 var logger=require('./logger.js');
 var commanMethod=require('./utilMethods');
 var sessionStore=require('./sessionStore.js');
+var promise = require('q');
 module.exports=(function(){
     return{
         getConfiguration:getConfiguration,
         getLogger:getLogger,
         getConstants:getConstants,
         getUtils:getUtils,
-        getSessionStore:getSessionStore
+        getSessionStore:getSessionStore,
+        createPromise:createPromise
     }
 
     function getConfiguration(){
@@ -27,6 +29,10 @@ module.exports=(function(){
 
     function getSessionStore(){
         return sessionStore;
+    }
+
+    function createPromise(){
+        return promise.defer();
     }
 
 }())

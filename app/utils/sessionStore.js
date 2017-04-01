@@ -17,8 +17,8 @@ module.exports=(function(){
 
     function get(key){
         if(!utils.isEmpty(key)){
-        return {user:{userId:123}};
-          // return sessionStore.get(key);
+      //  return {user:{userId:123}};
+           return sessionStore.get(key);
         }
     }
 

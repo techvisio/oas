@@ -1,8 +1,9 @@
 var express = require('express');
-var utils = require('./app/utils/utilProvider.js');
+var utils = require('./app/utils/utilFactory.js');
 var bodyParser = require('body-parser');
 var dbProvider=require('./app/providers/dbProvider.js');
-var routeHandler = require('./app/routes/routerHandler');
+var frontRouteHandler = require('./app/routes/frontRouter');
+
 
 //initialise the application
 var app = express();
@@ -28,7 +29,7 @@ next();
 });
 
 //handle all the requests
-app.use('/api',routeHandler)
+app.use('/api',frontRouteHandler);
 
 // Start the server
 app.set('port', utils.getConfiguration().getProperty('app.port') || 3000);

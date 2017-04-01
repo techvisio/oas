@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
-var propertyHolder = require('../utils/propertyHolder.js');
-var env = propertyHolder.getProperty('node.env');
-const dbUrl = propertyHolder.getProperty(env)['databaseUrl'];
-const dbUser = propertyHolder.getProperty(env)['dbUser'];
-const dbPassword = propertyHolder.getProperty(env)['dbPwd'];
+var utils = require('../utils/utilFactory');
+var env = utils.getConfiguration().getProperty('node.env') || 'development';
+const dbUrl = utils.getConfiguration().getProperty(env)['databaseUrl'];
+const dbUser = utils.getConfiguration().getProperty(env)['dbUser'];
+const dbPassword = utils.getConfiguration().getProperty(env)['dbPwd'];
 var connString = 'mongodb://'.concat(dbUser, ':', dbPassword, '@', dbUrl);
 module.exports = (function () {
     return {
