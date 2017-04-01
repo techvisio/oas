@@ -26,7 +26,13 @@ res.status(200).end();
 next();
 }
 });
+//setting static Content
+app.use(express.static('client'));
 
+//setting home page
+app.use('/',function (req, res) {
+  res.sendFile('index.html');
+});
 //handle all the requests
 app.use('/api',routeHandler)
 
