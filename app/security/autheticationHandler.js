@@ -1,5 +1,4 @@
 var router = require('../routes/frontRouter.js');
-var moment = require('moment');
 var jwt = require('jwt-simple');
 var User = require('../models/user.js');
 var sessionStore = require('../utils/sessionStore.js');
