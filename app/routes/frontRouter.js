@@ -25,10 +25,7 @@ router.all('/*', function (req, res, next) {
     if (req.headers.sectoken) {
         //get and populate session from store
         var session = utils.getSessionStore().get(req.headers.sectoken);
-        //for dev only injecting a dummy session
-        if(env==='development'){
-            session = {user:{}}
-        }
+       
         if (session) {
             req.session = session;
             logger.info(req.id + ':' + 'new request from : ' + session.user.userId);
@@ -44,6 +41,10 @@ router.all('/*', function (req, res, next) {
         logger.info(req.id + ':' + 'Request Body:' + JSON.stringify(req.body));
         logger.info(req.id + ':' + 'Request Header:' + JSON.stringify(req.headers));
     }
+     //for dev only injecting a dummy session
+        if(env==='development' && !req.session){
+            req.session = {user:{}}
+        }
     next();
 });
 

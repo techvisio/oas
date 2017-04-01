@@ -29,7 +29,7 @@ User.pre('save', function (next) {
             return next(error);
         }
         if (!counter) {
-            counterModel.create({ _id: 'user', seq: 1 });
+            counterModel.create({ _id: 'user', seq: 2 });
             counter = { seq: 1 };
         }
         

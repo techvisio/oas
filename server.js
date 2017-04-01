@@ -31,7 +31,7 @@ next();
 app.use(express.static('client'));
 
 //setting home page
-app.use('/',function (req, res) {
+app.get('/',function (req, res) {
   res.sendFile('index.html');
 });
 //handle all the requests
