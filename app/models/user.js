@@ -32,10 +32,9 @@ User.pre('save', function (next) {
             counterModel.create({ _id: 'user', seq: 2 });
             counter = { seq: 1 };
         }
-        
+
         doc.userName = doc.userName.toLowerCase();
         doc.userId = counter.seq;
-
         next();
     });
 });

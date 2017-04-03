@@ -3,7 +3,11 @@ var userService = require('../services/userService');
 var router = express.Router();
 
 router.post('/users', function (req, res) {
-    var context = {data : req.body, user:req.session, reqId:req.id};
+    
+    var user = req.body;
+    var loggedInUser = req.session.user;
+    var context = {data : user, user:loggedInUser, reqId:req.id};
+    
     userService.getUsers(context).then(function (user) {
         res.json(user);
     }, function (err) {
@@ -12,7 +16,11 @@ router.post('/users', function (req, res) {
 });
 
 router.get('/user/:id', function (req, res) {
-    var context = {userId : req.params.id, user:req.session.user, reqId:req.id};
+    
+    var userId = req.params.id;
+    var loggedInUser = req.session.user;
+    var context = {userId : userId, user:loggedInUser, reqId:req.id};
+
     userService.getUserById(context).then(function (user) {
         res.json(user);
     }, function (err) {
@@ -21,7 +29,11 @@ router.get('/user/:id', function (req, res) {
 });
 
 router.post('/user', function (req, res) {
-    var context = {data:req.body,user:req.session,reqId:req.id};
+    
+    var user = req.body;
+    var loggedInUser = req.session.user;
+    var context = {data:user, user:loggedInUser, reqId:req.id};
+    
     userService.createUser(context).then(function (user) {
         res.json(user)
     }, function (err) {
@@ -30,7 +42,11 @@ router.post('/user', function (req, res) {
 });
 
 router.put('/user', function (req, res) {
-    var context = {data:req.body,user:req.session,reqId:req.id};
+    
+    var user = req.body;
+    var loggedInUser = req.session.user;
+    var context = {data:user, user:loggedInUser, reqId:req.id};
+
     userService.updateUser(context).then(function (user) {
         res.json(user)
     }, function (err) {

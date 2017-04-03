@@ -13,8 +13,8 @@ module.exports = (function () {
 
     function getUsers(context) {
         var defer = utils.createPromise();
-
-        var query = criteriaQueryBuilder(context.data);
+        var queryData = context.data;
+        var query = criteriaQueryBuilder(queryData);
         userModel.find(query).exec(function (err, foundUsers) {
             if (err) {
                 defer.reject(new Error(err));
@@ -28,7 +28,9 @@ module.exports = (function () {
 
     function getUserById(context) {
         var defer = utils.createPromise();
-        userModel.findOne({ userId: context.userId, clientCode: context.user.clientCode }, function (err, foundUser) {
+        var userId = context.userId;
+        var clientCode = context.user.clientCode;
+        userModel.findOne({ userId:userId, clientCode: clientCode}, function (err, foundUser) {
             if (err) {
                 defer.reject(new Error(err)); j
             }
@@ -44,7 +46,9 @@ module.exports = (function () {
         var defer = utils.createPromise();
         var encryptedPassword = utils.getUtils().encrypt(context.data.password);
         context.data.password = encryptedPassword;
-        userModel.create(context.data, function (err, savedUser) {
+        var user = context.data;
+        user.isActive = true;
+        userModel.create(user, function (err, savedUser) {
             if (err) {
                 defer.reject(new Error(err));
             }
@@ -59,7 +63,7 @@ module.exports = (function () {
     function updateUser(context) {
         var defer = utils.createPromise();
         var user = context.data;
-        userModel.update({_id:user._id},user, function (err, updatedUser) {
+        userModel.update({ _id: user._id }, user, function (err, updatedUser) {
 
             if (err) {
                 err = new Error('something went wrong');

@@ -9,7 +9,6 @@ module.exports = (function () {
         createClient: createClient
     }
 
-
     function createClient(context) {
         var defer = utils.createPromise();
         var data = context.data;

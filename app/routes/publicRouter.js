@@ -4,6 +4,8 @@ var serviceLocator = require('../services/serviceLocator');
 var utils = require('../utils/utilFactory');
 var userService = serviceLocator.getService(utils.getConstants().SERVICE_USER);
 var clientService = serviceLocator.getService(utils.getConstants().SERVICE_CLIENT);
+var emailSender = require('../services/emailSender');
+
 
 var router = express.Router();
 
@@ -38,5 +40,14 @@ router.post('/signup', function (req, res) {
     })
 
 });
+
+router.post('/email', function (req, res) {
+
+    emailSender.sendMail();
+        res.status(200).send('success')
+    }, function (err) {
+        err = new Error('Singup failed');
+    });
+
 
 module.exports = router;

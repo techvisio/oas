@@ -2,6 +2,7 @@ var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 var counterModel = require('../providers/sequenceProvider.js');
 var utils = require('../utils/utilFactory');
+var uuid = require('node-uuid')
 
 var Client = new Schema({
     clientId : Number,
@@ -29,6 +30,7 @@ Client.pre('save', function (next) {
         var clientCode = doc.clientName.slice(0,4);
         var clientId = utils.getUtils().getLeftPaddingData(doc.clientId);
         doc.clientCode = clientCode+clientId;
+        doc.hashCode = uuid.v4();
         next();
     });
 });
