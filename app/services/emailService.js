@@ -1,3 +1,5 @@
+//TODO
+//remove unused
 var nodemailer = require('nodemailer');
 var transport = require('nodemailer-smtp-transport');
 const xoauth2 = require('xoauth2');
@@ -61,6 +63,8 @@ module.exports = (function () {
         sendMail(mailContent);
     }
 
+//TODO
+//unneccesary method use sendverifiction 
 function resendVerificationMail(client) {
         var subject = utils.getTemplate().getProperty('signUpMailTemplate')['subject'];
         var bodyTemplate = utils.getTemplate().getProperty('signUpMailTemplate')['body']

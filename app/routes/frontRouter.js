@@ -51,4 +51,20 @@ router.all('/*', function (req, res, next) {
 router.use('/public',publicRouteHandler);
 router.use('/admin', adminRouteHandler);
 
+router.use(errorHandler);
+
+function errorHandler(err,req,res,next){
+if(err.errorCode){
+    logger.error(req.id+": error occured code: "+err.errorCode);
+    //TODO:
+    //get message corresponding to code
+    //set in error message in return bean
+}
+var errorTag=new Date();
+logger.error(req.id+" tag:"+errorTag+"error occured msg:"+err.errMsg);
+logger.error(err);
+//TODO:
+//send response with tag 
+
+}
 module.exports = router;

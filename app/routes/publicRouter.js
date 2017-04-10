@@ -1,4 +1,5 @@
 var express = require('express');
+//TODO:move authhandler to service locator
 var autheticationHandler = require('../security/autheticationHandler');
 var serviceLocator = require('../services/serviceLocator');
 var utils = require('../utils/utilFactory');
@@ -26,11 +27,16 @@ router.post('/sessionValidate', function (req, res, next) {
 });
 
 router.post('/logout', function (req, res) {
+    //TODO
+    //handle logout as validate service should return a result object
     autheticationHandler.logout(req);
     res.status(200).send('success');
 });
 
 router.post('/signup', function (req, res) {
+
+//TODO:
+//No need to have context on public calls
 
     var context = { data: req.body, user: req.session, reqId: req.id };
     clientService.createClient(context).then(function (client) {
@@ -46,7 +52,7 @@ router.get('/client/verify', function (req, res) {
     clientService.verifyUser(verificationCode).then(function (client) {
         res.json(client);
     }, function (err) {
-        err = new Error('failed to verify user');
+      throw err;
     })
 
 });
@@ -57,7 +63,7 @@ router.post('/resendverificationmail', function (req, res) {
     clientService.resendVerificationMail(emailId).then(function (msg) {
         res.status(200).send(msg)
     }, function (err) {
-        err = new Error('some error occurred');
+      throw err;
     })
 
 });

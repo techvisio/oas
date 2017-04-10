@@ -6,6 +6,8 @@ var router = express.Router();
 
 router.post('/users', function (req, res) {
     
+    //TODO
+    //move this peice to utility method
     var user = req.body;
     var loggedInUser = req.session.user;
     var context = {data : user, user:loggedInUser, reqId:req.id};

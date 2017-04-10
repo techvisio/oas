@@ -14,6 +14,9 @@ module.exports = (function () {
         resendVerificationMail: resendVerificationMail
     }
 
+//TODO:
+//move data creating to methods
+//in user crate dao call back error remove cleitn as well and then throw error
     function createClient(context) {
         var defer = utils.createPromise();
         var data = context.data;
@@ -50,6 +53,8 @@ module.exports = (function () {
 
     }
 
+//TODO
+//update logic move to dao
     function verifyUser(verificationCode) {
         var defer = utils.createPromise();
         clientModel.findOneAndUpdate({ hashCode: verificationCode }, { $set: { isVerified: true } }, { new: true }, function (err, updatedClient) {
@@ -63,6 +68,9 @@ module.exports = (function () {
         return defer.promise;
     }
 
+//TODO
+//send only success
+//in case client not found throw error with a code
     function resendVerificationMail(emailId) {
         var defer = utils.createPromise();
         clientDao.getClientByEmailId(emailId).then(function (foundClient) {
