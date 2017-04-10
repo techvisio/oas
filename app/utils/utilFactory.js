@@ -1,5 +1,6 @@
 var constants=require('./constants.js');
 var config=require('./configService.js');
+var template=require('./templateService.js');
 var logger=require('./logger.js');
 var commanMethod=require('./utilMethods');
 var sessionStore=require('./sessionStore.js');
@@ -11,9 +12,13 @@ module.exports=(function(){
         getConstants:getConstants,
         getUtils:getUtils,
         getSessionStore:getSessionStore,
-        createPromise:createPromise
+        createPromise:createPromise,
+        getTemplate:getTemplate
     }
 
+    function getTemplate(){
+        return template;
+    }
     function getConfiguration(){
         return config;
     }

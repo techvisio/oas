@@ -8,40 +8,46 @@ var utils = require('../utils/utilFactory');
 module.exports = (function () {
   return {
     login: login,
-    logout :logout,
+    logout: logout,
     validateToken: validateToken
   }
 
   function logout(req) {
 
+    var result = {};
+    try{
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
     var session = getSessionFromStore(token);
-
-    if (!session) {
-      throw new Error('No token Found For User. Please Login First')
-    }
     sessionStore.remove(token);
+    result.loggedOut = true;
+  }
+  catch(err){
 
+  }
   };
 
   function validateToken(req) {
+    var result = {};
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
     var session = getSessionFromStore(token);
 
     if (!session) {
-      throw new Error('No token Found For User. Please Login First')
+      result.err = 'No token Found For User. Please Login First';
+      result.isValid = false;
     }
 
     if (!isSameClient(session.remoteIP, req.connection.remoteAddress)) {
-      throw new Error('Possible attack. Please fresh Login')
+      result.err = 'Possible attack. Please fresh Login';
+      result.isValid = false;
     }
 
     if (isTokenExpired(session)) {
-      throw new Error('No token Found For User. Please Login First')
+      result.err = 'No token Found For User. Please Login First';
+      result.isValid = false;
     }
 
     refreshTokenExpiration(token, session);
-
+    return result;
   };
 
   function login(req) {

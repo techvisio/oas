@@ -4,7 +4,7 @@ var serviceLocator = require('../services/serviceLocator');
 var utils = require('../utils/utilFactory');
 var userService = serviceLocator.getService(utils.getConstants().SERVICE_USER);
 var clientService = serviceLocator.getService(utils.getConstants().SERVICE_CLIENT);
-var emailSender = require('../services/emailSender');
+var emailService = serviceLocator.getService(utils.getConstants().SERVICE_EMAIL);
 
 
 var router = express.Router();
@@ -18,16 +18,16 @@ router.post('/login', function (req, res) {
 });
 
 router.post('/sessionValidate', function (req, res, next) {
-    autheticationHandler.validateToken(req);
+    var result = autheticationHandler.validateToken(req);
+    if (!result.isValid) {
+        throw new Error(result.err);
+    }
     res.status(200).send('success');
-    next();
 });
 
 router.post('/logout', function (req, res) {
     autheticationHandler.logout(req);
     res.status(200).send('success');
-}, function (err) {
-    throw err;
 });
 
 router.post('/signup', function (req, res) {
@@ -41,13 +41,25 @@ router.post('/signup', function (req, res) {
 
 });
 
-router.post('/email', function (req, res) {
-
-    emailSender.sendMail();
-        res.status(200).send('success')
+router.get('/client/verify', function (req, res) {
+    var verificationCode = req.query.hashCode;
+    clientService.verifyUser(verificationCode).then(function (client) {
+        res.json(client);
     }, function (err) {
-        err = new Error('Singup failed');
-    });
+        err = new Error('failed to verify user');
+    })
 
+});
+
+router.post('/resendverificationmail', function (req, res) {
+
+    var emailId = req.body.emailId;
+    clientService.resendVerificationMail(emailId).then(function (msg) {
+        res.status(200).send(msg)
+    }, function (err) {
+        err = new Error('some error occurred');
+    })
+
+});
 
 module.exports = router;

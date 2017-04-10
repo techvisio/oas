@@ -1,5 +1,7 @@
 var express = require('express');
-var userService = require('../services/userService');
+var serviceLocator = require('../services/serviceLocator');
+var utils = require('../utils/utilFactory');
+var userService = serviceLocator.getService(utils.getConstants().SERVICE_USER);
 var router = express.Router();
 
 router.post('/users', function (req, res) {

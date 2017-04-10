@@ -3,12 +3,17 @@
       "databaseUrl":"localhost:27017/oas",
       "dbUser":"",
       "dbPwd":"",
-      "logPayload":true
+      "logPayload":true,
+      "serverUrl":"localhost:3000"
   },
   "QA":{},
   "production":{},
   "app.port":3000,
    "secretKey":"techVisio'",
    "tokenExpireTime" : 10,
-  "log_directory":"/logs"
+  "log_directory":"/logs",
+  "emailService":"Gmail",
+  "user":"sgusain91@gmail.com",
+  "password":"P@ssw0rd8790",
+  "mailFrom":"Support<support@techvisio.co.in"
 }

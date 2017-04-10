@@ -68,14 +68,15 @@ module.exports = (function () {
 
     function updateUser(user) {
         var defer = utils.createPromise();
-        userModel.findByIdAndUpdate(user.userId, { $set: { userName: user.userName } }, { new: true }, function (err, updatedUser) {
+         userModel.update({ _id: user._id }, user, function (err, updatedUser) {
+
             if (err) {
-                defer.reject(new Error(err));
+                err = new Error('something went wrong');
             }
             else {
                 defer.resolve(updatedUser);
             }
-        })
+        });
         return defer.promise;
     }
 

@@ -4,7 +4,8 @@ var clientModel = modelFactory.getModel(utils.getConstants().MODEL_CLIENT);
 module.exports = (function () {
     return {
 
-        createClient: createClient
+        createClient: createClient,
+        getClientByEmailId: getClientByEmailId
 
     }
 
@@ -17,6 +18,21 @@ module.exports = (function () {
             else {
                 defer.resolve(savedClient);
             }
+        })
+        return defer.promise;
+    }
+
+    function getClientByEmailId(emailId) {
+
+        var defer = utils.createPromise();
+        clientModel.findOne({ primaryContact: emailId }, function (err, foundClient) {
+            if (err) {
+                defer.reject(new Error(err));
+            }
+            else {
+                defer.resolve(foundClient);
+            }
+
         })
         return defer.promise;
     }

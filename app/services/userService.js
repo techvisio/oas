@@ -1,6 +1,7 @@
-var userDao = require('../data_access/userDao.js');
 var modelFactory = require('../models/modelFactory');
 var utils = require('../utils/utilFactory');
+var daoFactory = require('../data_access/daoFactory');
+var userDao = daoFactory.getDataAccessObject(utils.getConstants().DAO_USER);
 var userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
 
 module.exports = (function () {
@@ -14,15 +15,15 @@ module.exports = (function () {
     function getUsers(context) {
         var defer = utils.createPromise();
         var queryData = context.data;
-        var query = criteriaQueryBuilder(queryData);
-        userModel.find(query).exec(function (err, foundUsers) {
-            if (err) {
-                defer.reject(new Error(err));
-            }
-            else {
-                defer.resolve(foundUsers);
-            }
+
+        userDao.getUsers(queryData).then(function (user) {
+
+            defer.resolve(user);
+
+        }, function (err) {
+            throw err;
         })
+
         return defer.promise;
     }
 
@@ -30,15 +31,18 @@ module.exports = (function () {
         var defer = utils.createPromise();
         var userId = context.userId;
         var clientCode = context.user.clientCode;
-        userModel.findOne({ userId:userId, clientCode: clientCode}, function (err, foundUser) {
-            if (err) {
-                defer.reject(new Error(err)); j
-            }
-            else {
-                defer.resolve(foundUser);
-            }
+        var userData = {
+            userId: userId,
+            clientCode: clientCode
+        };
+        userDao.getUserById(userData).then(function (user) {
 
+            defer.resolve(user);
+
+        }, function (err) {
+            throw err;
         })
+
         return defer.promise;
     }
 
@@ -48,56 +52,29 @@ module.exports = (function () {
         context.data.password = encryptedPassword;
         var user = context.data;
         user.isActive = true;
-        userModel.create(user, function (err, savedUser) {
-            if (err) {
-                defer.reject(new Error(err));
-            }
-            else {
-                defer.resolve(savedUser);
-            }
+        userDao.createUser(user).then(function (savedUser) {
 
+            defer.resolve(savedUser);
+
+        }, function (err) {
+            throw err;
         })
+
         return defer.promise;
     }
 
     function updateUser(context) {
         var defer = utils.createPromise();
         var user = context.data;
-        userModel.update({ _id: user._id }, user, function (err, updatedUser) {
+        userDao.updateUser(user).then(function (updatedUser) {
 
-            if (err) {
-                err = new Error('something went wrong');
-            }
-            else {
-                defer.resolve(updatedUser);
-            }
-        });
+            defer.resolve(updatedUser);
+
+        }, function (err) {
+            throw err;
+        })
+        
         return defer.promise;
     }
 
-    function criteriaQueryBuilder(data) {
-
-        var query = {};
-
-        if (!utils.getUtils().isEmpty(data.userName)) {
-            query["userName"] = data.userName;
-        }
-        if (!utils.getUtils().isEmpty(data.clientCode)) {
-            query["clientCode"] = data.clientCode;
-        }
-        if (!utils.getUtils().isEmpty(data.firstName)) {
-            query["firstName"] = new RegExp('^' + data.firstName, "i");
-        }
-        if (!utils.getUtils().isEmpty(data.lastname)) {
-            query["lastName"] = new RegExp('^' + data.lastname, "i");
-        }
-        if (!utils.getUtils().isEmpty(data.mobileNo)) {
-            query["mobileNo"] = data.mobileNo;
-        }
-        if (!utils.getUtils().isEmpty(data.emailId)) {
-            query["emailId"] = data.emailId;
-        }
-
-        return query;
-    }
 }());

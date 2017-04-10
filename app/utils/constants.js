@@ -12,9 +12,11 @@ module.exports = {
    //constants for Services
    SERVICE_USER: "USER",
    SERVICE_CLIENT: "CLIENT",
+   SERVICE_EMAIL: "EMAILSERVICE",
    SERVICE_QUESTIONNAIRE: "QUESTIONNAIRE",
 
     //constant for dao
+    DAO_CLIENT: "CLIENT",
     DAO_USER: "USER",
 
     //constants for mappings

@@ -11,7 +11,7 @@ var Client = new Schema({
     activationDate : Date,
     expirationDate : Date,
     primaryContact : String,
-    isVarified: Boolean,
+    isVerified: Boolean,
     hashCode : String
 });
 
