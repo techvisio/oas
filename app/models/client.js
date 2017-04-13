@@ -27,9 +27,9 @@ Client.pre('save', function (next) {
         }
 
         doc.clientId = counter.seq;
-        var clientCode = doc.clientName.slice(0,4);
-        var clientId = utils.getUtils().getLeftPaddingData(doc.clientId);
-        doc.clientCode = clientCode+clientId;
+       // var clientCode = doc.clientName.slice(0,4);
+        //var clientId = utils.getUtils().getLeftPaddingData(doc.clientId);
+        doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
         doc.hashCode = uuid.v4();
         next();
     });

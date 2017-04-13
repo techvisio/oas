@@ -7,7 +7,12 @@ module.exports = (function () {
         isEmpty: isEmpty,
         encrypt: encrypt,
         decrypt: decrypt,
-        getLeftPaddingData: getLeftPaddingData
+        getLeftPaddingData: getLeftPaddingData,
+        getContext: getContext,
+        generateClientCode: generateClientCode,
+        buildSuccessResponse: buildSuccessResponse,
+        buildFailedResponse: buildFailedResponse,
+        buildSystemFailedResponse: buildSystemFailedResponse
     };
 
     function isEmpty(object) {
@@ -33,6 +38,49 @@ module.exports = (function () {
     }
     function getLeftPaddingData(seq) {
         return String("00000" + seq).slice(-5);
+    }
+
+    function getContext(req) {
+        var user = req.body;
+        var loggedInUser = req.session.user;
+        var context = { data: user, user: loggedInUser, reqId: req.id };
+        return context;
+
+    }
+
+    function generateClientCode(clientName, clientId) {
+        var clientCode = clientName.slice(0, 4);
+        var clientId = getLeftPaddingData(clientId);
+        clientCode = clientCode + clientId;
+
+        return clientCode;
+    }
+
+    function buildSuccessResponse(data) {
+
+        var responseBody = {
+            status: "success",
+            data: data
+        };
+
+        return responseBody;
+    }
+
+    function buildFailedResponse(msgs, errType) {
+        var responseBody = {
+            status: "failed",
+            errType: errType,
+            msgs: msgs
+        };
+        return responseBody;
+    }
+
+    function buildSystemFailedResponse(errCode) {
+        var responseBody = {
+            status: "failed",
+            errMsg: "some error has been occured, error code: " + errCode
+        };
+        return responseBody
     }
 
 }())

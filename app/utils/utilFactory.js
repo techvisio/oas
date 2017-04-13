@@ -1,43 +1,50 @@
-var constants=require('./constants.js');
-var config=require('./configService.js');
-var template=require('./templateService.js');
-var logger=require('./logger.js');
-var commanMethod=require('./utilMethods');
-var sessionStore=require('./sessionStore.js');
+var constants = require('./constants.js');
+var config = require('./configService.js');
+var template = require('./templateService.js');
+var customError = require('./customErrorService.js');
+var logger = require('./logger.js');
+var commanMethod = require('./utilMethods');
+var sessionStore = require('./sessionStore.js');
 var promise = require('q');
-module.exports=(function(){
-    return{
-        getConfiguration:getConfiguration,
-        getLogger:getLogger,
-        getConstants:getConstants,
-        getUtils:getUtils,
-        getSessionStore:getSessionStore,
-        createPromise:createPromise,
-        getTemplate:getTemplate
+module.exports = (function () {
+    return {
+        getConfiguration: getConfiguration,
+        getLogger: getLogger,
+        getConstants: getConstants,
+        getUtils: getUtils,
+        getSessionStore: getSessionStore,
+        createPromise: createPromise,
+        getTemplate: getTemplate,
+        getCustomError: getCustomError
     }
 
-    function getTemplate(){
+    function getCustomError() {
+        return customError;
+    }
+
+    function getTemplate() {
         return template;
     }
-    function getConfiguration(){
+    function getConfiguration() {
         return config;
     }
-    function getLogger(){
+    function getLogger() {
         return logger;
     }
-    function getConstants(){
+    function getConstants() {
         return constants;
     }
-     function getUtils(){
+    function getUtils() {
         return commanMethod;
     }
 
-    function getSessionStore(){
+    function getSessionStore() {
         return sessionStore;
     }
 
-    function createPromise(){
+    function createPromise() {
         return promise.defer();
     }
+
 
 }())

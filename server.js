@@ -3,6 +3,7 @@ var utils = require('./app/utils/utilFactory.js');
 var bodyParser = require('body-parser');
 var dbProvider=require('./app/providers/dbProvider.js');
 var frontRouteHandler = require('./app/routes/frontRouter');
+var validator = require('./app/validations/validationProcessor');
 var jst = require('jst');
 
 //initialise the application
@@ -41,5 +42,9 @@ app.use('/api',frontRouteHandler);
 app.set('port', utils.getConfiguration().getProperty('app.port') || 3000);
 var server = app.listen(app.get('port'), function() {
 console.log('Express server listening on port ' + server.address().port);
+
+var data = {emailId:"sgusain91@gmail.com",
+userName:"aakash"}
+var validation = validator.validate("SIGN_UP", data);
 
 });

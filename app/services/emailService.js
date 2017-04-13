@@ -1,12 +1,6 @@
-//TODO
-//remove unused
 var nodemailer = require('nodemailer');
-var transport = require('nodemailer-smtp-transport');
-const xoauth2 = require('xoauth2');
 var utils = require('../utils/utilFactory');
-var should = require('should');
 var jst = require('jst');
-
 
 var emailService = utils.getConfiguration().getProperty('emailService');
 var user = utils.getConfiguration().getProperty('user');
@@ -33,7 +27,7 @@ module.exports = (function () {
 
         var mailOptions = {
             envelope: {
-                from: mailFrom, // used as MAIL FROM: address for SMTP
+                from: mailFrom,
                 to: mailingData.sentTo
             },
             subject: mailingData.emailSubject,
@@ -53,32 +47,16 @@ module.exports = (function () {
     function sendVerificationMail(client) {
         var subject = utils.getTemplate().getProperty('signUpMailTemplate')['subject'];
         var bodyTemplate = utils.getTemplate().getProperty('signUpMailTemplate')['body']
-       var emailContent = jst.render(bodyTemplate,client.toObject());
+        var emailContent = jst.render(bodyTemplate, client);
 
-     var mailContent={
-         sentTo: client.primaryContact,
-         htmlBody: emailContent,
-         emailSubject: subject
-     }   
+        var mailContent = {
+            sentTo: client.primaryContact,
+            htmlBody: emailContent,
+            emailSubject: subject
+        }
         sendMail(mailContent);
+        return Promise.resolve(client);
     }
-
-//TODO
-//unneccesary method use sendverifiction 
-function resendVerificationMail(client) {
-        var subject = utils.getTemplate().getProperty('signUpMailTemplate')['subject'];
-        var bodyTemplate = utils.getTemplate().getProperty('signUpMailTemplate')['body']
-       var emailContent = jst.render(bodyTemplate,client.toObject());
-
-     var mailContent={
-         sentTo: client.primaryContact,
-         htmlBody: emailContent,
-         emailSubject: subject
-     }   
-        sendMail(mailContent);
-    }
-
-
 }());
 
 

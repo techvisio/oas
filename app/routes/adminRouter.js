@@ -6,11 +6,7 @@ var router = express.Router();
 
 router.post('/users', function (req, res) {
     
-    //TODO
-    //move this peice to utility method
-    var user = req.body;
-    var loggedInUser = req.session.user;
-    var context = {data : user, user:loggedInUser, reqId:req.id};
+    var context = utils.getUtils().getContext(req);
     
     userService.getUsers(context).then(function (user) {
         res.json(user);
@@ -33,10 +29,8 @@ router.get('/user/:id', function (req, res) {
 });
 
 router.post('/user', function (req, res) {
-    
-    var user = req.body;
-    var loggedInUser = req.session.user;
-    var context = {data:user, user:loggedInUser, reqId:req.id};
+     
+    var context = utils.getUtils().getContext(req);
     
     userService.createUser(context).then(function (user) {
         res.json(user)
@@ -47,9 +41,7 @@ router.post('/user', function (req, res) {
 
 router.put('/user', function (req, res) {
     
-    var user = req.body;
-    var loggedInUser = req.session.user;
-    var context = {data:user, user:loggedInUser, reqId:req.id};
+    var context = utils.getUtils().getContext(req);
 
     userService.updateUser(context).then(function (user) {
         res.json(user)
