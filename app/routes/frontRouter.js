@@ -1,8 +1,6 @@
 var express = require('express');
 var utils = require('../utils/utilFactory');
 var modelfactory = require('../models/modelFactory.js');
-var userService = require('../services/userService');
-var questionnaireService = require('../services/questionnaireService');
 var adminRouteHandler = require('./adminRouter');
 var publicRouteHandler = require('./publicRouter');
 var router = express.Router();
@@ -25,7 +23,7 @@ router.all('/*', function (req, res, next) {
     if (req.headers.sectoken) {
         //get and populate session from store
         var session = utils.getSessionStore().get(req.headers.sectoken);
-       
+
         if (session) {
             req.session = session;
             logger.info(req.id + ':' + 'new request from : ' + session.user.userId);
@@ -41,30 +39,41 @@ router.all('/*', function (req, res, next) {
         logger.info(req.id + ':' + 'Request Body:' + JSON.stringify(req.body));
         logger.info(req.id + ':' + 'Request Header:' + JSON.stringify(req.headers));
     }
-     //for dev only injecting a dummy session
-        if(env==='development' && !req.session){
-            req.session = {user:{}}
-        }
+    //for dev only injecting a dummy session
+    if (env === 'development' && !req.session) {
+        req.session = { user: {} }
+    }
     next();
 });
 
-router.use('/public',publicRouteHandler);
+router.use('/public', publicRouteHandler);
 router.use('/admin', adminRouteHandler);
 
 router.use(errorHandler);
 
-function errorHandler(err,req,res,next){
-if(err.errorCode){
-    logger.error(req.id+": error occured code: "+err.errorCode);
-    //TODO:
-    //get message corresponding to code
-    //set in error message in return bean
-}
-var errorTag=new Date();
-logger.error(req.id+" tag:"+errorTag+"error occured msg:"+err.errMsg);
-logger.error(err);
-//TODO:
-//send response with tag 
+function errorHandler(err, req, res, next) {
 
+    var responseBody;
+
+    if (err.errorCodes) {
+        logger.error(req.id + ": error occured code: " + err.errorCode);
+        var msgs = [];
+
+        err.errorCodes.forEach(function (errorCode) {
+            var errorMsg = utils.getCustomError().getErrorMsg(errorCode);
+            msgs.push(errorMsg);
+        });
+
+        responseBody = utils.getUtils().buildFailedResponse(msgs, err.errType);
+        res.json(responseBody)
+    }
+    //for unidentified system errors
+    var errorTag = new Date().getTime();
+    logger.error(req.id + " tag:" + errorTag + "error occured msg:" + err.errMsg);
+    logger.error(err);
+    //TODO:
+    //send response with tag 
+    responseBody = utils.getUtils().buildSystemFailedResponse(errorTag);
+    res.json(responseBody);
 }
 module.exports = router;
