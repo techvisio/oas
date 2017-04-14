@@ -86,8 +86,9 @@ module.exports = (function () {
 
     function createClientData(data) {
         var clientData = {
-            clientName: data.clientName,
-            primaryContact: data.emailId
+            clientName: data.orgName||data.cnctName,
+            primaryEmailId: data.emailId,
+            primaryContactNo: data.cnctNo
         }
         return clientData;
     }

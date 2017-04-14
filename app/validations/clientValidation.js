@@ -12,7 +12,6 @@ module.exports = (function () {
 
     function init() {
         if (!isInitialised) {
-
             utils = require('../utils/utilFactory');
             serviceLocator = require('../services/serviceLocator');
             clientService = serviceLocator.getService(utils.getConstants().SERVICE_CLIENT);

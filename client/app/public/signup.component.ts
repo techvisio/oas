@@ -5,7 +5,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SignupDetail, SignupService }  from './signup.service';
 
 @Component({
-  templateUrl:'app/public/signup.component.html'
+  templateUrl:'app/public/signup.component.html',
+  styleUrls:['app/public/signup.component.css']
 })
 
 export class SignupComponent implements OnInit {
@@ -13,7 +14,7 @@ export class SignupComponent implements OnInit {
   //@HostBinding('style.display')   display = 'block';
   //@HostBinding('style.position')  position = 'absolute';
 
-  signupData: SignupDetail;
+  signupData:SignupDetail =  new SignupDetail();
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +30,11 @@ export class SignupComponent implements OnInit {
   }
 
 signup(){
-    this.service.signUp(this.signupData);
+    this.service.signUp(this.signupData).then(response => {
+      if(response.status==='success'){
+        this.router.navigate(['/success', "SIGNSUCC"]);
+      }
+    });
   }
   /*gotoHeroes() {
     //let heroId = this.hero ? this.hero.id : null;

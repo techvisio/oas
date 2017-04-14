@@ -27,7 +27,7 @@ module.exports = (function () {
     function getClientByEmailId(emailId) {
 
         var defer = utils.createPromise();
-        clientModel.findOne({ primaryContact: emailId }, function (err, foundClient) {
+        clientModel.findOne({ primaryEmailId: emailId }, function (err, foundClient) {
             if (err) {
                 defer.reject(new Error(err));
             }

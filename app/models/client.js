@@ -7,11 +7,14 @@ var uuid = require('node-uuid')
 var Client = new Schema({
     clientId : Number,
     clientCode : String,
+    isOrganisation : Boolean,
     clientName : String,
     activationDate : Date,
     expirationDate : Date,
-    primaryContact : String,
+    primaryEmailId : String,
+    primaryContactNo: String,
     isVerified: Boolean,
+    isDemo : Boolean,
     hashCode : String
 });
 
@@ -27,8 +30,7 @@ Client.pre('save', function (next) {
         }
 
         doc.clientId = counter.seq;
-       // var clientCode = doc.clientName.slice(0,4);
-        //var clientId = utils.getUtils().getLeftPaddingData(doc.clientId);
+       //TODO: Move this login to service
         doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
         doc.hashCode = uuid.v4();
         next();

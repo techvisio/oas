@@ -1,17 +1,15 @@
-<div class="main-section">
-
-	<div class="form-container">
-		<div class="form form1">
-    		<h2>Create an account</h2>
-    		<form>
-      			<input type="text" placeholder="Username"/>
-    			<input type="password" placeholder="Password"/>
-      			<input type="email" placeholder="Email Address"/>
-      			<input type="text" placeholder="Company code"/>
-      			<input type="tel" placeholder="Phone Number"/>
-      			<button>Register</button>
-    		</form>
-  </div>
-		<div class="forgot-link"><a href="#">Forgot your password?</a></div>
+<div class="form-container">
+	<div class="form">
+		<h2>Create an account</h2>
+		<form>
+			<input type="text" placeholder="Organisation Name" name="orgName" [(ngModel)]="signupData.orgName" />
+			<input type="text" placeholder="Full Name" name="cnctName" [(ngModel)]="signupData.cnctName" />
+			<input type="email" placeholder="Email Address" name="emailId" [(ngModel)]="signupData.emailId" />
+			<input type="tel" placeholder="Contact No" name="cnctNo" [(ngModel)]="signupData.cnctNo" />
+			<input type="text" placeholder="User Name" name="userName" [(ngModel)]="signupData.userName" />
+			<input type="password" placeholder="Password" name="password" [(ngModel)]="signupData.password" />
+			<input type="password" placeholder="Confirm Password" name="confirmpassword" [(ngModel)]="confirmpassword" [ngModelOptions]="{standalone: true}" />
+			<button (click)="signup()" name="register">Register</button>
+		</form>
 	</div>
 </div>

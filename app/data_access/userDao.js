@@ -19,7 +19,7 @@ module.exports = (function () {
                 defer.reject(new Error(err));
             }
             else {
-                defer.resolve(foundUsers);
+                defer.resolve(foundUsers.toObject());
             }
         })
         return defer.promise;
@@ -31,7 +31,7 @@ module.exports = (function () {
                 defer.reject(new Error(err));
             }
             else {
-                defer.resolve(foundUser);
+                defer.resolve(foundUser.toObject());
             }
 
         })
@@ -45,7 +45,7 @@ module.exports = (function () {
                 defer.reject(new Error(err));
             }
             else {
-                defer.resolve(foundUser);
+                defer.resolve(foundUser.toObject());
             }
 
         })
@@ -59,7 +59,7 @@ module.exports = (function () {
                 defer.reject(new Error(err));
             }
             else {
-                defer.resolve(savedUser);
+                defer.resolve(savedUser.toObject());
             }
         })
         return defer.promise;
@@ -74,7 +74,7 @@ module.exports = (function () {
                 err = new Error('something went wrong');
             }
             else {
-                defer.resolve(updatedUser);
+                defer.resolve(updatedUser.toObject());
             }
         });
         return defer.promise;

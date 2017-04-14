@@ -24,8 +24,7 @@ module.exports = (function () {
     }
 
     function sendMail(mailingData) {
-
-        var mailOptions = {
+          var mailOptions = {
             envelope: {
                 from: mailFrom,
                 to: mailingData.sentTo
@@ -33,7 +32,8 @@ module.exports = (function () {
             subject: mailingData.emailSubject,
             html: mailingData.htmlBody,
         }
-        smtpTransport.sendMail(mailOptions, function (err, result) {
+        smtpTransport.sendMail(mailOptions, function (err, msgInfo) {
+            var result={};
             if (err) {
                 result.err = 'mail not sent, some error occured!';
                 result.isMailSent = false;
@@ -50,7 +50,7 @@ module.exports = (function () {
         var emailContent = jst.render(bodyTemplate, client);
 
         var mailContent = {
-            sentTo: client.primaryContact,
+            sentTo: client.primaryEmailId,
             htmlBody: emailContent,
             emailSubject: subject
         }
