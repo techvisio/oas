@@ -5,7 +5,8 @@ import {CommonResponseService} from './common-response.service';
 
 
 @Component({
-  templateUrl:'app/common/common-response.component.html'
+  templateUrl:'app/common/common-response.component.html',
+  styleUrls:['app/common/common-response.component.css']
 })
 
 export class CommonResponseComponent implements OnInit {
