@@ -4,8 +4,7 @@ var questionnaireModel = modelFactory.getModel(utils.getConstants().MODEL_QUESTI
 module.exports = (function () {
     return {
         getQuestionnaireById: getQuestionnaireById,
-        createQuestionnaire : createQuestionnaire
-        
+        createQuestionnaire: createQuestionnaire
     }
 
     function getQuestionnaireById(questionnaire) {
@@ -17,7 +16,6 @@ module.exports = (function () {
             else {
                 defer.resolve(foundQuestion);
             }
-
         })
         return defer.promise;
     }

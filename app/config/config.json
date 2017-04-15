@@ -9,7 +9,7 @@
   "QA":{},
   "production":{},
   "app.port":3030,
-   "secretKey":"techVisio'",
+   "secretKey":"techVisio",
    "tokenExpireTime" : 10,
   "log_directory":"/logs",
   "emailService":"Gmail",
