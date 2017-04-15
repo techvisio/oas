@@ -52,28 +52,24 @@ router.use('/admin', adminRouteHandler);
 router.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
-
     var responseBody;
-
     if (err.errorCodes) {
         logger.error(req.id + ": error occured code: " + err.errorCode);
         var msgs = [];
-
         err.errorCodes.forEach(function (errorCode) {
             var errorMsg = utils.getCustomError().getErrorMsg(errorCode);
             msgs.push(errorMsg);
         });
-
         responseBody = utils.getUtils().buildFailedResponse(msgs, err.errType);
         res.json(responseBody)
     }
     //for unidentified system errors
-    var errorTag = new Date().getTime();
-    logger.error(req.id + " tag:" + errorTag + "error occured msg:" + err.errMsg);
-    logger.error(err);
-    //TODO:
-    //send response with tag 
-    responseBody = utils.getUtils().buildSystemFailedResponse(errorTag);
-    res.json(responseBody);
+    else {
+        var errorTag = new Date().getTime();
+        logger.error(req.id + " tag:" + errorTag + "error occured msg:" + err.errMsg);
+        logger.error(err);
+        responseBody = utils.getUtils().buildSystemFailedResponse(errorTag);
+        res.json(responseBody);
+    }
 }
 module.exports = router;

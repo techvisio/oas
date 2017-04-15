@@ -15,7 +15,7 @@ module.exports = (function () {
         var defer = utils.createPromise();
         clientModel.create(client, function (err, savedClient) {
             if (err) {
-                defer.reject(new Error(err));
+                defer.reject(err);
             }
             else {
                 defer.resolve(savedClient.toObject());
@@ -24,12 +24,13 @@ module.exports = (function () {
         return defer.promise;
     }
 
+//TODO:Only generic get method should here which takes criteria
     function getClientByEmailId(emailId) {
 
         var defer = utils.createPromise();
-        clientModel.findOne({ primaryContact: emailId }, function (err, foundClient) {
+        clientModel.findOne({ primaryEmailId: emailId }, function (err, foundClient) {
             if (err) {
-                defer.reject(new Error(err));
+                defer.reject(err);
             }
             else {
                 defer.resolve(foundClient);
@@ -38,12 +39,12 @@ module.exports = (function () {
         })
         return defer.promise;
     }
-
+    //TODO:get client on service layer and call update client generic method
     function verifyUser(verificationCode) {
         var defer = utils.createPromise();
         clientModel.findOneAndUpdate({ hashCode: verificationCode }, { $set: { isVerified: true } }, { new: true }, function (err, updatedClient) {
             if (err) {
-                console.log("Something wrong when updating data!");
+                defer.reject(err);
             }
             else {
                 defer.resolve(updatedClient);
@@ -52,6 +53,7 @@ module.exports = (function () {
         return defer.promise;
     }
 
+//TODO:use promise based approach check for find and delete method use _id instead
     function deleteClient(clientCode) {
 
         clientModel.findOne({ clientCode: clientCode }, function (err, foundClient) {

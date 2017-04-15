@@ -37,7 +37,8 @@ router.post('/signup', function (req, res,next) {
 
     var data = req.body;
     clientService.signupClient(data).then(function (client) {
-        res.status(200).send('success')
+        responseBody = utils.getUtils().buildSuccessResponse('success');
+        res.status(200).json(responseBody)
     }, function (err) {
         next(err);
     })

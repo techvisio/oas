@@ -10,11 +10,19 @@
   margin: 0 auto;
 }
 .form-container .form{
+<<<<<<< HEAD
   padding: 20px;
   display: block;
 }
 
 .form h3{
+=======
+  padding: 40px;
+  display: block;
+}
+
+.form h2{
+>>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
   margin: 0 0 10px;
   color: #38a2e8;
   font-size: 18px;
@@ -29,7 +37,11 @@
   border: 1px solid #ecf0f1;
   border-radius: 3px;
   margin: 0 0 10px;
+<<<<<<< HEAD
   padding: 10px 10px;
+=======
+  padding: 10px 15px;
+>>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
   box-sizing: border-box;
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
@@ -38,8 +50,20 @@
   border: 1px solid #38a2e8;
   color: #333333;
 }
+<<<<<<< HEAD
 /*
 .radio-button input[type="radio"] {
+=======
+::-webkit-input-placeholder {
+  color: #777777;
+}
+
+.radio-button{
+  margin-left: 19px;
+}
+.radio-button input[type="radio"] {
+  width: 15px;
+>>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
   display: inline;
   position: relative;
     top: 2px;
@@ -49,7 +73,11 @@
   display: inline;
   margin-left: 5px;
   margin-right: 15px;
+<<<<<<< HEAD
 }*/
+=======
+}
+>>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
 .form button {
   cursor: pointer;
   background: #38a2e8;
@@ -78,3 +106,7 @@
   color: #333333;
   text-decoration: none;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b

@@ -16,28 +16,29 @@ module.exports = (function () {
         var query = criteriaQueryBuilder(user);
         userModel.find(query).exec(function (err, foundUsers) {
             if (err) {
-                defer.reject(new Error(err));
+                defer.reject(err);
             }
             else {
-                defer.resolve(foundUsers);
+                defer.resolve(foundUsers.toObject());
             }
         })
         return defer.promise;
     }
+    //TODO:remove this method use generic get method
     function getUserById(user) {
         var defer = utils.createPromise();
         userModel.findOne({ userId: user.userId, clientId: user.clientId }, function (err, foundUser) {
             if (err) {
-                defer.reject(new Error(err));
+                defer.reject(err);
             }
             else {
-                defer.resolve(foundUser);
+                defer.resolve(foundUser.toObject());
             }
 
         })
         return defer.promise;
     }
-
+//TODO:remove this method use generic get method
     function getUserByUserName(user) {
         var defer = utils.createPromise();
         userModel.findOne({ userName: user.userName.toLowerCase(), clientCode: user.clientCode }, function (err, foundUser) {
@@ -45,7 +46,7 @@ module.exports = (function () {
                 defer.reject(new Error(err));
             }
             else {
-                defer.resolve(foundUser);
+                defer.resolve(foundUser.toObject());
             }
 
         })
@@ -56,10 +57,10 @@ module.exports = (function () {
         var defer = utils.createPromise();
         userModel.create(user, function (err, savedUser) {
             if (err) {
-                defer.reject(new Error(err));
+                defer.reject(err);
             }
             else {
-                defer.resolve(savedUser);
+                defer.resolve(savedUser.toObject());
             }
         })
         return defer.promise;
@@ -71,10 +72,10 @@ module.exports = (function () {
          userModel.update({ _id: user._id }, user, function (err, updatedUser) {
 
             if (err) {
-                err = new Error('something went wrong');
+                defer.reject(err);
             }
             else {
-                defer.resolve(updatedUser);
+                defer.resolve(updatedUser.toObject());
             }
         });
         return defer.promise;

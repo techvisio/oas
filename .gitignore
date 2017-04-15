@@ -33,6 +33,8 @@ client/app/*.js
 client/app/*.js.map
 client/app/public/*.js
 client/app/public/*.js.map
+client/app/common/*.js
+client/app/common/*.js.map
 
 # Dependency directories
 node_modules
