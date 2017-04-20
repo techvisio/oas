@@ -41,11 +41,20 @@ module.exports = (function () {
     }
 
     function getContext(req) {
-        var user = req.body;
+        var header = req.headers;
+        var remoteAddress = req.connection.remoteAddress;
+        var data = req.body;
         var loggedInUser = req.session.user;
-        var context = { data: user, user: loggedInUser, reqId: req.id };
+        var parameter = req.query;
+        var context = { data: data, user: loggedInUser, reqId: req.id, header: header, remoteAddress: remoteAddress, parameter: parameter };
         return context;
 
+    }
+
+    function cloneContext(context, data) {
+        var clonedContext = Object.clone(context);
+        cloneContext.data = data;
+        return clonedContext;
     }
 
     function generateClientCode(clientName, clientId) {

@@ -1,71 +1,112 @@
-var modelFactory = require('../models/modelFactory');
-var utils = require('../utils/utilFactory');
-var clientModel = modelFactory.getModel(utils.getConstants().MODEL_CLIENT);
+var modelFactory;
+var utils;
+var clientModel;
+var isInitialised = false;
+
 module.exports = (function () {
     return {
 
         createClient: createClient,
-        getClientByEmailId: getClientByEmailId,
         deleteClient: deleteClient,
-        verifyUser: verifyUser
-
+        getClients: getClients,
+        updateClient: updateClient
     }
 
-    function createClient(client) {
-        var defer = utils.createPromise();
-        clientModel.create(client, function (err, savedClient) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(savedClient.toObject());
-            }
-        })
-        return defer.promise;
+    function init() {
+        if (!isInitialised) {
+            modelFactory = require('../models/modelFactory');
+            utils = require('../utils/utilFactory');
+            clientModel = modelFactory.getModel(utils.getConstants().MODEL_CLIENT);
+            isInitialised = true;
+        }
     }
 
-//TODO:Only generic get method should here which takes criteria
-    function getClientByEmailId(emailId) {
-
-        var defer = utils.createPromise();
-        clientModel.findOne({ primaryEmailId: emailId }, function (err, foundClient) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(foundClient);
-            }
-
-        })
-        return defer.promise;
-    }
-    //TODO:get client on service layer and call update client generic method
-    function verifyUser(verificationCode) {
-        var defer = utils.createPromise();
-        clientModel.findOneAndUpdate({ hashCode: verificationCode }, { $set: { isVerified: true } }, { new: true }, function (err, updatedClient) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(updatedClient);
-            }
+    function getClients(client) {
+        init();
+        return new Promise((resolve, reject) => {
+            var query = criteriaQueryBuilder(client);
+            clientModel.find(query).exec(function (err, foundClients) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundClients);
+                }
+            })
         });
-        return defer.promise;
+
     }
 
-//TODO:use promise based approach check for find and delete method use _id instead
-    function deleteClient(clientCode) {
+    function createClient(context) {
+        init();
+        return new Promise((resolve, reject) => {
+            var client = context.data;
+            clientModel.create(client, function (err, savedClient) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(savedClient.toObject());
+                }
+            })
+        });
 
-        clientModel.findOne({ clientCode: clientCode }, function (err, foundClient) {
-            if (err) {
-                throw new Error(err);
-            }
-            else {
-                foundClient.remove();
-            }
+    }
 
-        })
 
+    function updateClient(context) {
+        init();
+        return new Promise((resolve, reject) => {
+            var client = context.data;
+            clientModel.update({ _id: client._id }, client, function (err, updatedClient) {
+
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(updatedClient);
+                }
+            })
+        });
+
+    }
+
+    function deleteClient(client) {
+        init();
+        return new Promise((resolve, reject) => {
+            clientModel.findOneAndRemove({ _id: client._id }, function (err, foundClient) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    foundClient.remove();
+                    resolve("client deleted");
+                }
+            })
+        });
+
+    }
+
+    function criteriaQueryBuilder(data) {
+
+        var query = {};
+        if (!utils.getUtils().isEmpty(data.clientId)) {
+            query["clientId"] = data.clientId;
+        }
+
+        if (!utils.getUtils().isEmpty(data.clientName)) {
+            query["clientName"] = data.clientName;
+        }
+        if (!utils.getUtils().isEmpty(data.clientCode)) {
+            query["clientCode"] = data.clientCode;
+        }
+        if (!utils.getUtils().isEmpty(data.primaryContactNo)) {
+            query["primaryContactNo"] = data.primaryContactNo;
+        }
+        if (!utils.getUtils().isEmpty(data.primaryEmailId)) {
+            query["primaryEmailId"] = data.primaryEmailId;
+        }
+        return query;
     }
 
 }())

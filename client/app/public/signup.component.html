@@ -1,15 +1,6 @@
 <div class="form-container">
 	<div class="form">
-<<<<<<< HEAD
-		<h3>Create an account</h3>
-		<form>
-			<input [(ngmodel)]="name" type="text" placeholder="Name"  />
-			<input type="text" placeholder="User Name" [(ngmodel)]="userName"  />
-			<input type="password" placeholder="Password" [(ngmodel)]="password" />
-			<input type="email" placeholder="Email Address" [(ngmodel)]="emailId" />
-			<input type="tel" placeholder="Phone Number" [(ngmodel)]="contactNo" />
-			<button>Register</button>
-=======
+
 		<h2>Create an account</h2>
 		<form>
 			<input type="text" placeholder="Organisation Name" name="orgName" [(ngModel)]="signupData.orgName" />
@@ -20,7 +11,6 @@
 			<input type="password" placeholder="Password" name="password" [(ngModel)]="signupData.password" />
 			<input type="password" placeholder="Confirm Password" name="confirmpassword" [(ngModel)]="confirmpassword" [ngModelOptions]="{standalone: true}" />
 			<button (click)="signup()" name="register">Register</button>
->>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
 		</form>
 	</div>
 </div>

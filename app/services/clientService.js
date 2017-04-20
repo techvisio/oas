@@ -1,33 +1,61 @@
-var modelFactory = require('../models/modelFactory');
-var utils = require('../utils/utilFactory');
-var userService = require('./userService');
-var emailService = require('./emailService');
-var daoFactory = require('../data_access/daoFactory');
-var clientDao = daoFactory.getDataAccessObject(utils.getConstants().DAO_CLIENT);
-var clientModel = modelFactory.getModel(utils.getConstants().MODEL_CLIENT);
-var validationService = require('../validations/validationProcessor');
-
-
+var modelFactory;
+var utils;
+var userService;
+var emailService;
+var daoFactory;
+var clientDao;
+var clientModel;
+var validationService;
+var uuid;
+var isInitialised = false;
 module.exports = (function () {
     return {
 
         signupClient: signupClient,
         verifyUser: verifyUser,
         resendVerificationMail: resendVerificationMail,
-        getClientByEmailId: getClientByEmailId
+        getClientByEmailId: getClientByEmailId,
+        getClients: getClients
     }
 
-    function signupClient(data) {
+    function init() {
+        if (!isInitialised) {
+            modelFactory = require('../models/modelFactory');
+            utils = require('../utils/utilFactory');
+            userService = require('./userService');
+            emailService = require('./emailService');
+            daoFactory = require('../data_access/daoFactory');
+            clientDao = daoFactory.getDataAccessObject(utils.getConstants().DAO_CLIENT);
+            clientModel = modelFactory.getModel(utils.getConstants().MODEL_CLIENT);
+            validationService = require('../validations/validationProcessor');
+            uuid = require('node-uuid');
+            isInitialised = true;
+        }
+    }
 
-        var defer = utils.createPromise();
-        var clientData = createClientData(data);
-        validationService.validate(utils.getConstants().SIGN_UP, data)
-            .then(checkValidationResult)
-            .then(createClient)
-            .then(createUser)
-            .then(sendConfirmationMail)
-            .catch(err => defer.reject(err))
+    function getClients(context) {
+        init();
+        return new Promise((resolve, reject) => {
+            var queryData = context.data;
+            clientDao.getClients(queryData).then(function (clients) {
+                resolve(clients);
+            })
+                .catch(err => reject(err));
+        });
+    }
 
+    function signupClient(context) {
+        init();
+        var data = context.data;
+        return new Promise((resolve, reject) => {
+            var clientData = createClientData(data);
+            validationService.validate(utils.getConstants().SIGN_UP, data)
+                .then(checkValidationResult)
+                .then(createClient)
+                .then(createUser)
+                .then(sendConfirmationMail)
+                .catch(err => reject(err))
+        });
 
         function checkValidationResult(codes) {
             return new Promise((resolve, reject) => {
@@ -53,7 +81,9 @@ module.exports = (function () {
 
         function createClient() {
             return new Promise((resolve, reject) => {
-                clientDao.createClient(clientData).then(client => resolve(client));
+
+                clientData.hashCode = uuid.v4();
+                clientDao.createClient(context).then(client => resolve(client));
             });
         }
 
@@ -69,84 +99,102 @@ module.exports = (function () {
                 userService.createUser(userContext).then(function (user) {
                     resolve(client);
                 }, function (err) {
-                    clientDao.deleteClient(clientCode);
-                    throw err;
+                    clientDao.deleteClient(client);
+                    reject(err);
                 })
             });
         }
 
         function sendConfirmationMail(client) {
             return new Promise((resolve, reject) => {
-                emailService.sendVerificationMail(client).then(data => defer.resolve(client));
+                emailService.sendVerificationMail(client).then(data => resolve(client));
             });
         }
-
-        return defer.promise;
     }
 
     function createClientData(data) {
         var clientData = {
-            clientName: data.orgName||data.cnctName,
+            clientName: data.orgName || data.cnctName,
             primaryEmailId: data.emailId,
             primaryContactNo: data.cnctNo
         }
         return clientData;
     }
 
-    function createUserForClient(data, clientCode) {
-        var userData = {
-            userName: data.userName,
-            password: data.password,
-            emailId: data.emailId,
-            clientCode: clientCode
+    function verifyUser(context) {
+        init();
+
+        return new Promise((resolve, reject) => {
+            var hashCode = context.parameter.hashCode;
+            getClientByHashCode(hashCode)
+                .then(handleClientUpdateForVerification)
+                .then(updClient => resolve(updClient))
+                .catch(err => reject(err))
+
+        });
+
+        function handleClientUpdateForVerification(client) {
+            return new Promise((resolve, reject) => {
+                if (client) {
+                    client.isVerified = true;
+                    client.activationDate = new Date();
+                    clientDao.updateClient(context).then(updatedClient => resolve(updatedClient));
+                }
+                else {
+                    var err = new Error('No user found');
+                    err.errCode = utils.getConstants().NO_USER_FOUND;
+                    reject(err);
+                }
+            });
         }
-        var userContext = { data: userData };
-        userService.createUser(userContext).then(function (user) {
-
-        }, function (err) {
-            clientDao.deleteClient(clientCode);
-            throw err;
-        })
-
     }
 
-    function verifyUser(verificationCode) {
-        var defer = utils.createPromise();
-        clientDao.verifyUser(verificationCode).then(function (updatedClient) {
-            defer.resolve(updatedClient);
-        }, function (err) {
-            throw err;
-        })
-        return defer.promise;
-    }
+    function resendVerificationMail(context) {
+        init();
+        return new Promise((resolve, reject) => {
+            var client = context.data;
+            getClientByEmailId(client.primaryEmailId).then(function (foundClient) {
+                if (foundClient) {
+                    emailService.sendVerificationMail(foundClient);
+                }
+                else {
+                    var err = new Error('No User found with provided credentials');
+                    err.errCode = utils.getConstants().NO_USER_FOUND;
+                    reject(err);
+                }
+                var msg = 'Mail sent successfully';
+                resolve(msg);
+            })
 
-    //TODO
-    //send only success
-    //in case client not found throw error with a code
-    function resendVerificationMail(emailId) {
-        var defer = utils.createPromise();
-        clientDao.getClientByEmailId(emailId).then(function (foundClient) {
-            if (foundClient) {
-                emailService.sendVerificationMail(foundClient);
-            }
-            var msg = 'Mail sent successfully';
-            defer.resolve(msg);
-        }, function (err) {
-            throw err;
-        })
+                .catch(err => reject(err));
+        });
 
-        return defer.promise;
     }
 
     function getClientByEmailId(emailId) {
-        var defer = utils.createPromise();
-
-        clientDao.getClientByEmailId(emailId).then(function (client) {
-            defer.resolve(client);
-        }, function (err) {
-            throw err;
-        })
-
-        return defer.promise;
+        init();
+        return new Promise((resolve, reject) => {
+            var client = {
+                primaryEmailId: emailId
+            }
+            clientDao.getClients(client).then(function (clients) {
+                resolve(clients[0].toObject());
+            })
+                .catch(err => reject(err));
+        });
     }
+
+    function getClientByHashCode(hashCode) {
+        init();
+        return new Promise((resolve, reject) => {
+            var client = {
+                hashCode: hashCode
+            }
+            clientDao.getClients(client).then(function (clients) {
+                resolve(clients[0].toObject());
+            })
+                .catch(err => reject(err));
+        });
+    }
+
 }());

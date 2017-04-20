@@ -8,7 +8,8 @@ import { PublicRoutingModule } from './public-routing.module';
 import { HomePageComponent }  from './homepage.component';
 import { SignupComponent }   from './signup.component';
 import { SignupService }   from './signup.service';
-
+import {LoginComponent} from './login.component';
+import {LoginService} from './login.service'
 
 @NgModule({
   imports: [
@@ -19,8 +20,9 @@ import { SignupService }   from './signup.service';
   ],
   declarations: [
     HomePageComponent,
-    SignupComponent
+    SignupComponent,
+    LoginComponent
   ],
-  providers: [ SignupService ]
+  providers: [ SignupService,LoginService ]
 })
 export class PublicModule { }

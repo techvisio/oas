@@ -1,89 +1,81 @@
-var modelFactory = require('../models/modelFactory');
-var utils = require('../utils/utilFactory');
-var userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
+var modelFactory;
+var utils;
+var userModel;
+var isInitialised = false;
+
 module.exports = (function () {
     return {
         getUsers: getUsers,
-        getUserById: getUserById,
         createUser: createUser,
-        updateUser: updateUser,
-        getUserByUserName: getUserByUserName
+        updateUser: updateUser
+    }
+
+    function init() {
+        if (!isInitialised) {
+            modelFactory = require('../models/modelFactory');
+            utils = require('../utils/utilFactory');
+            userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
+            isInitialised = true;
+        }
     }
 
     function getUsers(user) {
-        var defer = utils.createPromise();
+        init();
 
-        var query = criteriaQueryBuilder(user);
-        userModel.find(query).exec(function (err, foundUsers) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(foundUsers.toObject());
-            }
-        })
-        return defer.promise;
-    }
-    //TODO:remove this method use generic get method
-    function getUserById(user) {
-        var defer = utils.createPromise();
-        userModel.findOne({ userId: user.userId, clientId: user.clientId }, function (err, foundUser) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(foundUser.toObject());
-            }
-
-        })
-        return defer.promise;
-    }
-//TODO:remove this method use generic get method
-    function getUserByUserName(user) {
-        var defer = utils.createPromise();
-        userModel.findOne({ userName: user.userName.toLowerCase(), clientCode: user.clientCode }, function (err, foundUser) {
-            if (err) {
-                defer.reject(new Error(err));
-            }
-            else {
-                defer.resolve(foundUser.toObject());
-            }
-
-        })
-        return defer.promise;
-    }
-
-    function createUser(user) {
-        var defer = utils.createPromise();
-        userModel.create(user, function (err, savedUser) {
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(savedUser.toObject());
-            }
-        })
-        return defer.promise;
-    }
-
-
-    function updateUser(user) {
-        var defer = utils.createPromise();
-         userModel.update({ _id: user._id }, user, function (err, updatedUser) {
-
-            if (err) {
-                defer.reject(err);
-            }
-            else {
-                defer.resolve(updatedUser.toObject());
-            }
+        return new Promise((resolve, reject) => {
+            var query = criteriaQueryBuilder(user);
+            userModel.find(query).exec(function (err, foundUsers) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundUsers);
+                }
+            })
         });
-        return defer.promise;
+    }
+
+    function createUser(context) {
+        init();
+
+        return new Promise((resolve, reject) => {
+            var user = context.data;
+            userModel.create(user, function (err, savedUser) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(savedUser.toObject());
+                }
+            })
+        });
+    }
+
+
+    function updateUser(context) {
+        init();
+        return new Promise((resolve, reject) => {
+            var user = context.data;
+            userModel.update({ _id: user._id }, user, function (err, updatedUser) {
+
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(updatedUser);
+                }
+            })
+        });
+
     }
 
     function criteriaQueryBuilder(data) {
 
         var query = {};
+
+        if (!utils.getUtils().isEmpty(data.userId)) {
+            query["userId"] = data.userId;
+        }
 
         if (!utils.getUtils().isEmpty(data.userName)) {
             query["userName"] = data.userName;

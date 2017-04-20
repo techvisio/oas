@@ -61,7 +61,7 @@ function errorHandler(err, req, res, next) {
             msgs.push(errorMsg);
         });
         responseBody = utils.getUtils().buildFailedResponse(msgs, err.errType);
-        res.json(responseBody)
+        res.status(500).json(responseBody)
     }
     //for unidentified system errors
     else {
@@ -69,7 +69,7 @@ function errorHandler(err, req, res, next) {
         logger.error(req.id + " tag:" + errorTag + "error occured msg:" + err.errMsg);
         logger.error(err);
         responseBody = utils.getUtils().buildSystemFailedResponse(errorTag);
-        res.json(responseBody);
+        res.status(500).json(responseBody);
     }
 }
 module.exports = router;

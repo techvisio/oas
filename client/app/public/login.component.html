@@ -1,0 +1,13 @@
+<div class="form-container">
+	<div class="form">
+
+		<h2>Sign in to your account </h2>
+		<form>
+			<input type="text" placeholder="Client Code" name="clientCode" [(ngModel)]="loginData.clientCode" />
+			<input type="text" placeholder="User Name" name="userName" [(ngModel)]="loginData.userName" />
+			<input type="password" placeholder="Password" name="password" [(ngModel)]="loginData.password" />
+			
+			<button (click)="login()" name="login">Login</button>
+		</form>
+	</div>
+</div>

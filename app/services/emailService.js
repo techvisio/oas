@@ -1,21 +1,13 @@
-var nodemailer = require('nodemailer');
-var utils = require('../utils/utilFactory');
-var jst = require('jst');
-
-var emailService = utils.getConfiguration().getProperty('emailService');
-var user = utils.getConfiguration().getProperty('user');
-var password = utils.getConfiguration().getProperty('password');
-var mailFrom = utils.getConfiguration().getProperty('mailFrom');
-
-
-var smtpTransport = nodemailer.createTransport("SMTP", {
-    service: emailService,
-    auth: {
-        user: user,
-        pass: password
-    }
-});
-
+var express;
+var nodemailer;
+var utils;
+var jst;
+var app;
+var emailService;
+var user;
+var password;
+var mailFrom;
+var isInitialised = false;
 
 module.exports = (function () {
     return {
@@ -23,8 +15,34 @@ module.exports = (function () {
         sendVerificationMail: sendVerificationMail
     }
 
+    function init() {
+        if (!isInitialised) {
+            express = require('express');
+            nodemailer = require('nodemailer');
+            utils = require('../utils/utilFactory');
+            jst = require('jst');
+            app = express();
+            emailService = utils.getConfiguration().getProperty('emailService');
+            user = utils.getConfiguration().getProperty('user');
+            password = utils.getConfiguration().getProperty('password');
+            mailFrom = utils.getConfiguration().getProperty('mailFrom');
+            isInitialised = true;
+        }
+    }
+
+
     function sendMail(mailingData) {
-          var mailOptions = {
+        init();
+
+        var smtpTransport = nodemailer.createTransport("SMTP", {
+            service: emailService,
+            auth: {
+                user: user,
+                pass: password
+            }
+        });
+
+        var mailOptions = {
             envelope: {
                 from: mailFrom,
                 to: mailingData.sentTo
@@ -33,7 +51,7 @@ module.exports = (function () {
             html: mailingData.htmlBody,
         }
         smtpTransport.sendMail(mailOptions, function (err, msgInfo) {
-            var result={};
+            var result = {};
             if (err) {
                 result.err = 'mail not sent, some error occured!';
                 result.isMailSent = false;
@@ -45,8 +63,10 @@ module.exports = (function () {
     }
 
     function sendVerificationMail(client) {
+        init();
         var subject = utils.getTemplate().getProperty('signUpMailTemplate')['subject'];
         var bodyTemplate = utils.getTemplate().getProperty('signUpMailTemplate')['body']
+        client.port = (process.env.PORT || utils.getConfiguration().getProperty('app.port') || 3030);
         var emailContent = jst.render(bodyTemplate, client);
 
         var mailContent = {

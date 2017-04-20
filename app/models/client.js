@@ -2,7 +2,7 @@ var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 var counterModel = require('../providers/sequenceProvider.js');
 var utils = require('../utils/utilFactory');
-var uuid = require('node-uuid')
+
 
 var Client = new Schema({
     clientId : Number,
@@ -32,8 +32,7 @@ Client.pre('save', function (next) {
 
         doc.clientId = counter.seq;
        //TODO: Move this login to service
-        doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
-        doc.hashCode = uuid.v4();
+       doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
         next();
     });
 });

@@ -23,12 +23,12 @@ module.exports = (function () {
         init();
         var promise = new Promise((resolve, reject) => {
             clientService.getClientByEmailId(signupData.emailId).then(function (client) {
-                if(client){
-                resolve('DUP_USER');
-            }
-            else{
-                resolve(undefined);
-            }
+                if (client) {
+                    resolve('DUP_USER');
+                }
+                else {
+                    resolve(undefined);
+                }
             },
                 function (err) {
                     //log error

@@ -1,9 +1,11 @@
-var modelFactory = require('../models/modelFactory');
-var utils = require('../utils/utilFactory');
-var daoFactory = require('../data_access/daoFactory');
-var userDao = daoFactory.getDataAccessObject(utils.getConstants().DAO_USER);
-var userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
-var logger = utils.getLogger();
+var modelFactory;
+var utils;
+var daoFactory;
+var userDao;
+var userModel;
+var logger;
+var isInitialised = false;
+
 
 module.exports = (function () {
     return {
@@ -14,94 +16,103 @@ module.exports = (function () {
         getUserByUserName: getUserByUserName
     }
 
-    function getUsers(context) {
+    function init() {
+        if (!isInitialised) {
+            modelFactory = require('../models/modelFactory');
+            utils = require('../utils/utilFactory');
+            daoFactory = require('../data_access/daoFactory');
+            userDao = daoFactory.getDataAccessObject(utils.getConstants().DAO_USER);
+            userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
+            logger = utils.getLogger();
+            isInitialised = true;
+        }
+    }
 
+    function getUsers(context) {
+        init();
         logger.debug(context.reqId + " : getUsers request recieved ");
 
-        var defer = utils.createPromise();
-        var queryData = context.data;
+        return new Promise((resolve, reject) => {
+            var queryData = context.data;
 
-        userDao.getUsers(queryData).then(function (users) {
-
-            defer.resolve(users);
-            logger.debug(context.reqId + " : sending response : " + users);
-        }, function (err) {
-            throw err;
-        })
-
-        return defer.promise;
+            userDao.getUsers(queryData)
+                .then(function (users) {
+                    resolve(users);
+                    logger.debug(context.reqId + " : sending response : " + users);
+                })
+                .catch(err => reject(err));
+        });
 
     }
 
-    function getUserById(context) {
-        logger.debug(context.reqId + " : getUserById request recieved for userId : " + context.userId);
-        var defer = utils.createPromise();
-        var userId = context.userId;
-        var clientCode = context.user.clientCode;
-        var userData = {
-            userId: userId,
-            clientCode: clientCode
-        };
-        userDao.getUserById(userData).then(function (user) {
 
-            defer.resolve(user);
-            logger.debug(context.reqId + " : sending response from getUserById: " + user);
-        }, function (err) {
-            throw err;
-        })
-
-        return defer.promise;
-    }
 
     function createUser(context) {
-
+        init();
         logger.debug(context.reqId + " : createUser request recieved for new user : " + context.data);
 
-        var defer = utils.createPromise();
-        var encryptedPassword = utils.getUtils().encrypt(context.data.password);
-        context.data.password = encryptedPassword;
-        var user = context.data;
-        user.isActive = true;
-        userDao.createUser(user).then(function (savedUser) {
+        return new Promise((resolve, reject) => {
+            var encryptedPassword = utils.getUtils().encrypt(context.data.password);
+            context.data.password = encryptedPassword;
+            context.data.isActive = true;;
+            
+            userDao.createUser(context).then(function (savedUser) {
 
-            defer.resolve(savedUser);
-            logger.debug(context.reqId + " : sending response from createUser: " + savedUser);
-        }, function (err) {
-            throw err;
-        })
+                resolve(savedUser);
+                logger.debug(context.reqId + " : sending response from createUser: " + savedUser);
+            })
+                .catch(err => reject(err));
+        });
 
-        return defer.promise;
     }
 
     function updateUser(context) {
-
+        init();
         logger.debug(context.reqId + " : updateUser request recieved for user : " + context.data);
 
-        var defer = utils.createPromise();
-        var user = context.data;
-        userDao.updateUser(user).then(function (updatedUser) {
+        return new Promise((resolve, reject) => {
+            userDao.updateUser(context).then(function (updatedUser) {
 
-            defer.resolve(updatedUser);
-            logger.debug(context.reqId + " : sending response from updateUser: " + updatedUser);
-        }, function (err) {
-            throw err;
-        })
+                resolve(updatedUser);
+                logger.debug(context.reqId + " : sending response from updateUser: " + updatedUser);
+            })
+                .catch(err => reject(err));
+        });
 
-        return defer.promise;
     }
 
-    function getUserByUserName(user) {
+    function getUserById(userId, clientCode) {
+        init();
+        logger.debug(" : getUserById request recieved for userId : " + userId);
+        return new Promise((resolve, reject) => {
+            var user = {
+                userId: userId,
+                client: clientCode
+            };
+            userDao.getUsers(user)
+                .then(function (foundUser) {
+                    resolve(foundUser[0].toObject());
+                    logger.debug(context.reqId + " : sending response from getUserById: " + user);
+                })
+                 .catch(err => reject(err));
+        });
 
-        logger.debug(context.reqId + " : getUserByUserName request recieved for user name: " + user.userName);
-
-        var defer = utils.createPromise();
-        userDao.getUserByUserName(user).then(function (foundUser) {
-            defer.resolve(foundUser);
-            logger.debug(context.reqId + " : sending response from getUserByUserName: " + foundUser);
-        }, function (err) {
-            throw err;
-        })
-        return defer.promise;
     }
+
+    function getUserByUserName(userName) {
+        init();
+        logger.debug(" : getUserByUserName request recieved for user name: " + userName);
+        return new Promise((resolve, reject) => {
+            var user = {
+            userName: userName
+        }
+        userDao.getUsers(user).then(function (foundUser) {
+            defer.resolve(foundUser[0].toObject());
+            logger.debug(" : sending response from getUserByUserName: " + foundUser[0]);
+        })
+                .catch(err => reject(err));
+        });
+
+            }
 
 }());
