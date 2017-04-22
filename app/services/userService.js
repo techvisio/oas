@@ -55,7 +55,7 @@ module.exports = (function () {
             var encryptedPassword = utils.getUtils().encrypt(context.data.password);
             context.data.password = encryptedPassword;
             context.data.isActive = true;;
-            
+
             userDao.createUser(context).then(function (savedUser) {
 
                 resolve(savedUser);
@@ -83,36 +83,51 @@ module.exports = (function () {
 
     function getUserById(userId, clientCode) {
         init();
-        logger.debug(" : getUserById request recieved for userId : " + userId);
+        logger.debug("getUserById request recieved for userId : " + userId);
         return new Promise((resolve, reject) => {
             var user = {
                 userId: userId,
-                client: clientCode
+                clientCode: clientCode
             };
             userDao.getUsers(user)
                 .then(function (foundUser) {
                     resolve(foundUser[0].toObject());
-                    logger.debug(context.reqId + " : sending response from getUserById: " + user);
+                    logger.debug("sending response from getUserById: " + foundUser[0].toObject());
                 })
-                 .catch(err => reject(err));
+                .catch(err => reject(err));
         });
 
     }
 
     function getUserByUserName(userName) {
         init();
-        logger.debug(" : getUserByUserName request recieved for user name: " + userName);
+        logger.debug("getUserByUserName request recieved for user name: " + userName);
         return new Promise((resolve, reject) => {
             var user = {
-            userName: userName
-        }
-        userDao.getUsers(user).then(function (foundUser) {
-            defer.resolve(foundUser[0].toObject());
-            logger.debug(" : sending response from getUserByUserName: " + foundUser[0]);
-        })
+                userName: userName
+            }
+            userDao.getUsers(user).then(function (foundUser) {
+                resolve(foundUser[0].toObject());
+                logger.debug("sending response from getUserByUserName: " + foundUser[0].toObject());
+            })
                 .catch(err => reject(err));
         });
 
-            }
+    }
+
+    function deleteUser(user) {
+        init();
+        logger.debug("delete request recieved for user : " + user);
+
+        return new Promise((resolve, reject) => {
+            userDao.deleteUser(context).then(function (msg) {
+
+                resolve(msg);
+                logger.debug("sending response from deleteUser: " + msg);
+            })
+                .catch(err => reject(err));
+        });
+
+    }
 
 }());

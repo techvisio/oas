@@ -1,22 +1,26 @@
-var mongoose=require('mongoose');
-var Schema=mongoose.Schema;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var counterModel = require('../providers/sequenceProvider.js');
 var utils = require('../utils/utilFactory');
 
 
 var Client = new Schema({
-    clientId : Number,
-    clientCode : String,
-    isOrganisation : Boolean,
-    clientName : String,
+    clientId: Number,
+    clientCode: String,
+    isOrganisation: Boolean,
+    clientName: String,
+    creationDate: Date,
+    createdBy: String,
+    updateDate: Date,
+    updatedBy: String,
     //TODO Populate this date when user is verified
-    activationDate : Date,
-    expirationDate : Date,
-    primaryEmailId : String,
+    activationDate: Date,
+    expirationDate: Date,
+    primaryEmailId: String,
     primaryContactNo: String,
     isVerified: Boolean,
-    isDemo : Boolean,
-    hashCode : String
+    isDemo: Boolean,
+    hashCode: String
 });
 
 Client.pre('save', function (next) {
@@ -27,14 +31,13 @@ Client.pre('save', function (next) {
         }
         if (!counter) {
             counterModel.create({ _id: 'client', seq: 2 });
-            counter = { seq:1 };
+            counter = { seq: 1 };
         }
 
         doc.clientId = counter.seq;
-       //TODO: Move this login to service
-       doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
+        doc.clientCode = utils.getUtils().generateClientCode(doc.clientName, doc.clientId);
         next();
     });
 });
 
-module.exports=mongoose.model('client',Client);
+module.exports = mongoose.model('client', Client);

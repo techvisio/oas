@@ -2,6 +2,7 @@ var modelFactory;
 var utils;
 var userModel;
 var isInitialised = false;
+var logger;
 
 module.exports = (function () {
     return {
@@ -15,13 +16,14 @@ module.exports = (function () {
             modelFactory = require('../models/modelFactory');
             utils = require('../utils/utilFactory');
             userModel = modelFactory.getModel(utils.getConstants().MODEL_USER);
+            logger = utils.getLogger();
             isInitialised = true;
         }
     }
 
     function getUsers(user) {
         init();
-
+        logger.debug("getUsers request recieved ");
         return new Promise((resolve, reject) => {
             var query = criteriaQueryBuilder(user);
             userModel.find(query).exec(function (err, foundUsers) {
@@ -30,6 +32,7 @@ module.exports = (function () {
                 }
                 else {
                     resolve(foundUsers);
+                    logger.debug("sending response from getUsers: " + foundUsers);
                 }
             })
         });
@@ -37,15 +40,19 @@ module.exports = (function () {
 
     function createUser(context) {
         init();
-
+        logger.debug(context.reqId + " : createUser request recieved ");
         return new Promise((resolve, reject) => {
             var user = context.data;
+            user.creationDate = new Date().toDateString();
+            user.createdBy = context.loggedInUser.userName;
+
             userModel.create(user, function (err, savedUser) {
                 if (err) {
                     reject(err);
                 }
                 else {
                     resolve(savedUser.toObject());
+                    logger.debug(context.reqId + " : sending response from createUser : " + savedUser.toObject());
                 }
             })
         });
@@ -54,8 +61,11 @@ module.exports = (function () {
 
     function updateUser(context) {
         init();
+        logger.debug(context.reqId + " : updateUser request recieved ");
         return new Promise((resolve, reject) => {
             var user = context.data;
+            user.updateDate = new Date;
+            user.updatedBy = context.loggedInUser.userName;
             userModel.update({ _id: user._id }, user, function (err, updatedUser) {
 
                 if (err) {
@@ -63,10 +73,27 @@ module.exports = (function () {
                 }
                 else {
                     resolve(updatedUser);
+                    logger.debug(context.reqId + " : sending response from updateUser: " + updatedUser);
                 }
             })
         });
+    }
 
+    function deleteUser(user) {
+        init();
+        logger.debug("delete request recieved for user : " + user);
+        return new Promise((resolve, reject) => {
+            userModel.findOneAndRemove({ _id: user._id }, function (err, foundUser) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    foundUser.remove();
+                    resolve("user deleted");
+                    logger.debug("sending response from deleteUser: " + msg);
+                }
+            })
+        });
     }
 
     function criteriaQueryBuilder(data) {

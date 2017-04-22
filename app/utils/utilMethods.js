@@ -46,7 +46,7 @@ module.exports = (function () {
         var data = req.body;
         var loggedInUser = req.session.user;
         var parameter = req.query;
-        var context = { data: data, user: loggedInUser, reqId: req.id, header: header, remoteAddress: remoteAddress, parameter: parameter };
+        var context = { data: data, loggedInUser: loggedInUser, reqId: req.id, header: header, remoteAddress: remoteAddress, parameter: parameter };
         return context;
 
     }

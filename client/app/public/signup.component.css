@@ -2,26 +2,22 @@
 	position: relative;
   background: #ffffff;
   max-width: 25%;
+  min-width: 276px;
   width: 100%;
   border-top: 5px solid #38a2e8;
   border-left: 15px solid #38a2e8;
   border-radius: 6px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   margin: 0 auto;
+  margin-top: 35px;
 }
 .form-container .form{
-
-  padding: 20px;
-  display: block;
-}
-
-.form h3{
-  padding: 40px;
+  padding: 20px 40px;
   display: block;
 }
 
 .form h2{
-  margin: 0 0 10px;
+  margin: 0 0 17px;
   color: #38a2e8;
   font-size: 18px;
   font-weight: 400;
@@ -35,31 +31,27 @@
   border: 1px solid #ecf0f1;
   border-radius: 3px;
   margin: 0 0 10px;
-
   padding: 10px 15px;
-
   box-sizing: border-box;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
 }
 .form input:focus {
   border: 1px solid #38a2e8;
+  border-left: 5px solid #38a2e8;
   color: #333333;
 }
-
-/*
-.radio-button input[type="radio"] {
-=======
 ::-webkit-input-placeholder {
   color: #777777;
 }
 
 .radio-button{
-  margin-left: 19px;
+  margin: 0 0 10px 8px;
 }
 .radio-button input[type="radio"] {
   width: 15px;
->>>>>>> f93cf275919968aa2740333f79b4ededf6a5cd5b
   display: inline;
   position: relative;
     top: 2px;
@@ -69,9 +61,7 @@
   display: inline;
   margin-left: 5px;
   margin-right: 15px;
-<<<<<<< HEAD
-}*/
-
+}
 .form button {
   cursor: pointer;
   background: #38a2e8;
@@ -99,4 +89,29 @@
 .forgot-link a {
   color: #333333;
   text-decoration: none;
+}
+
+.ng-valid input{
+  border-left: 5px solid #42A948; /* green */
+}
+.ng-invalid input{
+  border-left: 5px solid #a94442; /* red */
+}
+   .tooltip-arrow {
+    position: relative;
+    top: -45px;
+    left: 235px;
+    vertical-align: ce;
+    width: 100%;
+    text-align: left;
+}
+ .tooltip-arrow p{
+    background-color: rgba(0, 0, 0, 0.65);
+    padding: 2px 7px;
+    color: red;
+ }
+.traingle-sym{
+    position: relative;
+    left: -18px;
+    color: rgba(0, 0, 0, 0.71);
 }

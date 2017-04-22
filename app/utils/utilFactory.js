@@ -1,4 +1,5 @@
 var constants = require('./constants.js');
+var errorConstants = require('./errorConstants.js');
 var config = require('./configService.js');
 var template = require('./templateService.js');
 var customError = require('./customErrorService.js');
@@ -15,7 +16,8 @@ module.exports = (function () {
         getSessionStore: getSessionStore,
         createPromise: createPromise,
         getTemplate: getTemplate,
-        getCustomError: getCustomError
+        getCustomError: getCustomError,
+        getErrorConstants: getErrorConstants
     }
 
     function getCustomError() {
@@ -46,5 +48,8 @@ module.exports = (function () {
         return promise.defer();
     }
 
+    function getErrorConstants() {
+        return errorConstants;
+    }
 
 }())
